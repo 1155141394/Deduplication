@@ -47,24 +47,34 @@ public class Chunking {
         int m = 4;
         int d = 257;
         int q = 13;
-        int p = 0;
-        int c = 0;
+
+
+        ArrayList<ArrayList<Integer>> chunks = new ArrayList<>();
+        int lastFlag = -1;
+        int nowFlag = 0;
         for (int i = 0; i  < size - m; i++ ){
+            int p = 0;
 
-            if (i == 0){
-                for (int j = 0;j<m;j++){
-                    p += (int)buffer[i+j]*Math.pow(d,m-1-j);
+            for (int j = 0;j<m;j++){
+                p += (int)buffer[i+j]%q*Math.pow(d,m-1-j)%q;
+            }
+
+
+            if(p%q == 0){
+
+                nowFlag = i + m - 1;
+                ArrayList<Integer> chunk = new ArrayList<>();
+                for (int j = lastFlag + 1;j <= nowFlag; j++){
+                    chunk.add((int)buffer[j]);
                 }
-            }else{
-                p = p % ((int)Math.pow(d,m-1)) * d + buffer[i+m-1];
+                chunks.add(chunk);
+                lastFlag = i + m - 1;
             }
 
-            if(p%q == 11){
-                c ++;
-            }
         }
-        System.out.println(c);
-        System.out.println(size);
+        System.out.println(chunks.size());
+
+
 
     }
 }
