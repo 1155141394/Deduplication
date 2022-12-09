@@ -22,7 +22,7 @@ public class Chunking {
     }
 
     public static byte[] getChecksum(byte[] buffer) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        MessageDigest md = MessageDigest.getInstance("SHA-1");
         md.update(buffer, 0, buffer.length);
         return md.digest();
     }
