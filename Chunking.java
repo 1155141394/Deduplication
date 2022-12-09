@@ -1,6 +1,8 @@
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.lang.Math;
+import java.security.MessageDigest;
 
 public class Chunking {
 
@@ -17,6 +19,12 @@ public class Chunking {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static byte[] getChecksum(byte[] buffer) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(buffer, 0, buffer.length);
+        return md.digest();
     }
 
     public static void main(String[] args) {
