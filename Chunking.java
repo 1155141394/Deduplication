@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.lang.Math;
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.io.FileWriter;
 
 public class Chunking {
     static int maxContainerSize = 1048576;
@@ -42,6 +43,20 @@ public class Chunking {
         return byteArr;
     }
 
+    public static int strList2File(String path, ArrayList<String> list){
+        try{
+            FileWriter writer = new FileWriter("output.txt");
+            for(String str: list) {
+                writer.write(str + System.lineSeparator());
+            }
+            writer.close();
+            return 0;
+        }
+        catch (Exception e){
+            return 1;
+        }
+    }
+
     public static byte[] getChecksum(byte[] buffer){
         try{
             MessageDigest md = MessageDigest.getInstance("SHA-1");
@@ -67,7 +82,7 @@ public class Chunking {
             int offset = 0;
             ArrayList<String> fileRecipe = new ArrayList<>(); // File recipe
             int len = 0;
-            String basicConPath = "./data/"; // Need to change
+            String basicPath = "./data/"; // Need to change
             for (ArrayList<Byte> byteList: chunks)
             {
                 byte[] byteArr = byteList2Arr(byteList);
@@ -75,7 +90,7 @@ public class Chunking {
                 // Check if the container has enough space
                 if (offset + len >= maxContainerSize) {
                     // Store container
-                    String path = basicConPath + containerNum;
+                    String path = basicPath + containerNum;
                     byte2file(path, byteList2Arr(container));
                     containerNum += 1;
                     offset = 0;
@@ -84,14 +99,18 @@ public class Chunking {
                 byte[] checksum = getChecksum(byteArr);
                 String fingerprint = Arrays.toString(checksum);
                 indexes.add(fingerprint + "," + offset + "," + len);
+                // Store the fingerprint in file recipe
+                fileRecipe.add(fingerprint);
                 // Add chunk to buffer
-
+                container.addAll(byteList);
                 offset += len;
-
             }
             // Store the index file
-
+            String indexFilePath = basicPath + "mydedup.index";
+            strList2File(indexFilePath, indexes);
             // Store file recipe
+            String fileRecipePath = basicPath + uploadFileName;
+            strList2File(fileRecipePath, fileRecipe);
         }
         else
         {
