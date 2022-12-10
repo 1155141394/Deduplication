@@ -234,11 +234,20 @@ public class Chunking {
         ArrayList<ArrayList<Byte>> chunks = new ArrayList<>();
         int lastFlag = -1;
         int nowFlag = 0;
-        for (int i = 0; i  < size - m; i++ ){
+        int i = 0;
+        while(i<size-m){
             int p = 0;
 
             for (int j = 0;j<m;j++){
                 p += (int)buffer[i+j]%q*Math.pow(d,m-1-j)%q;
+            }
+            if (i+m>=size){
+                ArrayList<Byte> chunk = new ArrayList<>();
+                for (int j = i ;j < size; j++){
+                    chunk.add(buffer[j]);
+                }
+                chunks.add(chunk);
+                return chunks;
             }
 
 
@@ -247,11 +256,15 @@ public class Chunking {
                 nowFlag = i + m - 1;
                 ArrayList<Byte> chunk = new ArrayList<>();
                 for (int j = lastFlag + 1;j <= nowFlag; j++){
-                    chunk.add((byte) buffer[j]);
+                    chunk.add(buffer[j]);
                 }
                 chunks.add(chunk);
                 lastFlag = i + m - 1;
+                i = nowFlag + 1;
+                continue;
             }
+
+            i++;
 
         }
         return chunks;
@@ -260,6 +273,7 @@ public class Chunking {
     public static void main(String[] args) {
         String fileName = "./test.jpg";
         ArrayList<ArrayList<Byte>> chunks = getChunks(fileName);
+        System.out.println("Chunks size is "+chunks.size());
         try {
             chunkUpload(chunks, "mydedup.index", "test1.jpg");
         }
