@@ -3,9 +3,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.lang.Math;
 import java.security.MessageDigest;
+import java.util.Arrays;
 
 public class Chunking {
-    int maxContainerSize = ;
+    static int maxContainerSize = 1048576;
     public static byte[] file2byte(String path)
     {
         try {
@@ -21,29 +22,76 @@ public class Chunking {
         }
     }
 
+    public static int byte2file(String path, byte[] buffer)
+    {
+        try (FileOutputStream stream = new FileOutputStream(path)) {
+            stream.write(buffer);
+            return 0;
+        }
+        catch (Exception e){
+            return 1;
+        }
+    }
+
+    public static byte[] byteList2Arr(ArrayList<Byte> byteList)
+    {
+        byte[] byteArr = new byte[byteList.size()];
+        for(int i = 0; i < byteList.size(); i++) {
+            byteArr[i] = byteList.get(i);
+        }
+        return byteArr;
+    }
+
     public static byte[] getChecksum(byte[] buffer){
         try{
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             md.update(buffer, 0, buffer.length);
             return md.digest();
         }
+        // 如果hash失败返回一个空指针
         catch (Exception e) {
             System.out.println(e);
             return null;
         }
     }
 
-    public static int chunkUpload(ArrayList<ArrayList<Integer>> chunks, String indexFile)
+    public static int chunkUpload(ArrayList<ArrayList<Byte>> chunks, String indexFile, String uploadFileName)
     {
         File f = new File(indexFile);
-        if (f.exists())
+        // 判断Index file是否存在
+        if (!f.exists())
         {
-            ArrayList<Byte> container = new ArrayList<Byte>();
+            ArrayList<Byte> container = new ArrayList<>();
+            int containerNum = 0; // number of containers
+            ArrayList<String> indexes = new ArrayList<>(); // fingerprint list
             int offset = 0;
-            for (ArrayList<Byte> bytearr: chunks)
+            ArrayList<String> fileRecipe = new ArrayList<>(); // File recipe
+            int len = 0;
+            String basicConPath = "./data/"; // Need to change
+            for (ArrayList<Byte> byteList: chunks)
             {
+                byte[] byteArr = byteList2Arr(byteList);
+                len = byteList.size();
+                // Check if the container has enough space
+                if (offset + len >= maxContainerSize) {
+                    // Store container
+                    String path = basicConPath + containerNum;
+                    byte2file(path, byteList2Arr(container));
+                    containerNum += 1;
+                    offset = 0;
+                }
+                // Generate the index
+                byte[] checksum = getChecksum(byteArr);
+                String fingerprint = Arrays.toString(checksum);
+                indexes.add(fingerprint + "," + offset + "," + len);
+                // Add chunk to buffer
+
+                offset += len;
 
             }
+            // Store the index file
+
+            // Store file recipe
         }
         else
         {
@@ -73,7 +121,7 @@ public class Chunking {
         int q = 13;
 
 
-        ArrayList<ArrayList<Integer>> chunks = new ArrayList<>();
+        ArrayList<ArrayList<Byte>> chunks = new ArrayList<>();
         int lastFlag = -1;
         int nowFlag = 0;
         for (int i = 0; i  < size - m; i++ ){
@@ -87,9 +135,9 @@ public class Chunking {
             if(p%q == 0){
 
                 nowFlag = i + m - 1;
-                ArrayList<Integer> chunk = new ArrayList<>();
+                ArrayList<Byte> chunk = new ArrayList<>();
                 for (int j = lastFlag + 1;j <= nowFlag; j++){
-                    chunk.add((int)buffer[j]);
+                    chunk.add((byte) buffer[j]);
                 }
                 chunks.add(chunk);
                 lastFlag = i + m - 1;
