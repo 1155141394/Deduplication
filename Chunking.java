@@ -153,7 +153,8 @@ public class Chunking {
             ArrayList<String> indexes = file2StrList("data/mydedup.index");
             HashMap<String, Integer> indexMap = new HashMap<>();
             for(String index: indexes){
-                String[] s = index.split(",");
+                String[] s = index.split(";");
+                System.out.println(s[0]);
                 indexMap.put(s[0],1);
             }
             int offset = 0; // file offset
@@ -180,12 +181,14 @@ public class Chunking {
                 String fingerprint = Arrays.toString(checksum);
                 // Compare fingerprint
                 if (!indexMap.containsKey(fingerprint))
+                {
                     indexes.add(fingerprint + ";" + containerNum + ";" + offset + ";" + len);
+                    container.addAll(byteList);
+                    offset += len;
+                }
                 else System.out.println(byteList.size());
                 fileRecipe.add(fingerprint);
                 // Add chunk to container
-                container.addAll(byteList);
-                offset += len;
             }
             // Store the container in memory to cloud
             if(container.size() >= 1) {
