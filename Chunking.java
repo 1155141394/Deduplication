@@ -122,11 +122,12 @@ public class Chunking {
                 container.addAll(byteList);
                 offset += len;
             }
+
             // Store the index file
             String indexFilePath = basicPath + "mydedup.index";
             strList2File(indexFilePath, indexes);
             // Store file recipe
-            String fileRecipePath = basicPath + uploadFileName;
+            String fileRecipePath = basicPath + uploadFileName + ".txt";
             strList2File(fileRecipePath, fileRecipe);
             // Store the container number
             String conNumPath = basicPath + "containNum.txt";
@@ -182,7 +183,7 @@ public class Chunking {
             String indexFilePath = basicPath + "mydedup.index";
             strList2File(indexFilePath, indexes);
             // Store file recipe
-            String fileRecipePath = basicPath + uploadFileName;
+            String fileRecipePath = basicPath + uploadFileName + ".txt";
             strList2File(fileRecipePath, fileRecipe);
             // Store the container number
             String conNumPath = basicPath + "containNum.txt";
@@ -191,6 +192,10 @@ public class Chunking {
             strList2File(conNumPath, tmp);
         }
 
+        return 0;
+    }
+
+    public static int downloadFile(String fileName){
         return 0;
     }
 
@@ -239,8 +244,12 @@ public class Chunking {
             }
 
         }
-        System.out.println(chunks.get(1));
-
+        try {
+            chunkUpload(chunks, "mydedup.index", "test.jpg");
+        }
+        catch (IOException e){
+            return;
+        }
 
 
     }
