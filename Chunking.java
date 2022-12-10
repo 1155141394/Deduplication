@@ -115,7 +115,7 @@ public class Chunking {
                 // Generate the index
                 byte[] checksum = getChecksum(byteArr);
                 String fingerprint = Arrays.toString(checksum);
-                indexes.add(fingerprint + "," + containerNum + "," + offset + "," + len);
+                indexes.add(fingerprint + ";" + containerNum + ";" + offset + ";" + len);
                 // Store the fingerprint in file recipe
                 fileRecipe.add(fingerprint);
                 // Add chunk to buffer
@@ -151,7 +151,7 @@ public class Chunking {
             ArrayList<String> indexes = file2StrList("data/mydedup.index");
             HashMap<String, Integer> indexMap = new HashMap<>();
             for(String index: indexes){
-                String[] s = index.split(",");
+                String[] s = index.split(";");
                 indexMap.put(s[0],1);
             }
             int offset = 0; // file offset
@@ -178,7 +178,7 @@ public class Chunking {
                 String fingerprint = Arrays.toString(checksum);
                 // Compare fingerprint
                 if (!indexMap.containsKey(fingerprint))
-                    indexes.add(fingerprint + "," + containerNum + "," + offset + "," + len);
+                    indexes.add(fingerprint + ";" + containerNum + ";" + offset + ";" + len);
                 fileRecipe.add(fingerprint);
                 // Add chunk to container
                 container.addAll(byteList);
@@ -211,7 +211,7 @@ public class Chunking {
     }
 
     public static void main(String[] args) {
-        String fileName = "./test.jpg";
+        String fileName = "./test1.jpg";
         File file = new File(fileName);
         InputStream in = null;
         byte[] buffer;
