@@ -154,7 +154,7 @@ public class Chunking {
             String basicPath = "data/"; // Need to change
 
             // Loop the chunks
-            for (ArrayList<Byte> bytelist: chunks)
+            for (ArrayList<Byte> byteList: chunks)
             {
                 byte[] byteArr = byteList2Arr(byteList);
                 len = byteList.size();
