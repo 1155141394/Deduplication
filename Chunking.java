@@ -115,7 +115,7 @@ public class Chunking {
                 // Generate the index
                 byte[] checksum = getChecksum(byteArr);
                 String fingerprint = Arrays.toString(checksum);
-                indexes.add(fingerprint + "," + containerNum + "," + offset + "," + len);
+                indexes.add(fingerprint + ";" + containerNum + ";" + offset + ";" + len);
                 // Store the fingerprint in file recipe
                 fileRecipe.add(fingerprint);
                 // Add chunk to buffer
@@ -123,11 +123,13 @@ public class Chunking {
                 offset += len;
             }
             // Upload the container in memory to cloud
-            String path = basicPath + "container" + containerNum + ".txt";
-            byte2file(path, byteList2Arr(container));
-            container = new ArrayList<>(); // Optimize
-            containerNum += 1;
-            offset = 0;
+            if(container.size() >= 1) {
+                String path = basicPath + "container" + containerNum + ".txt";
+                byte2file(path, byteList2Arr(container));
+                container = new ArrayList<>(); // Optimize
+                containerNum += 1;
+                offset = 0;
+            }
             // Store the index file
             String indexFilePath = basicPath + "mydedup.index";
             strList2File(indexFilePath, indexes);
@@ -178,18 +180,21 @@ public class Chunking {
                 String fingerprint = Arrays.toString(checksum);
                 // Compare fingerprint
                 if (!indexMap.containsKey(fingerprint))
-                    indexes.add(fingerprint + "," + containerNum + "," + offset + "," + len);
+                    indexes.add(fingerprint + ";" + containerNum + ";" + offset + ";" + len);
+                else System.out.println(byteList.size());
                 fileRecipe.add(fingerprint);
                 // Add chunk to container
                 container.addAll(byteList);
                 offset += len;
             }
             // Store the container in memory to cloud
-            String path = basicPath + "container" + containerNum + ".txt";
-            byte2file(path, byteList2Arr(container));
-            container = new ArrayList<>(); // Optimize
-            containerNum += 1;
-            offset = 0;
+            if(container.size() >= 1) {
+                String path = basicPath + "container" + containerNum + ".txt";
+                byte2file(path, byteList2Arr(container));
+                container = new ArrayList<>(); // Optimize
+                containerNum += 1;
+                offset = 0;
+            }
             // Store the index file
             String indexFilePath = basicPath + "mydedup.index";
             strList2File(indexFilePath, indexes);
@@ -250,7 +255,6 @@ public class Chunking {
                 return chunks;
             }
 
-
             if(p%q == 0){
 
                 nowFlag = i + m - 1;
@@ -263,19 +267,17 @@ public class Chunking {
                 i = nowFlag + 1;
                 continue;
             }
-
             i++;
-
         }
         return chunks;
     }
 
     public static void main(String[] args) {
-        String fileName = "./test.jpg";
+        String fileName = "./test1.jpg";
         ArrayList<ArrayList<Byte>> chunks = getChunks(fileName);
         System.out.println("Chunks size is "+chunks.size());
         try {
-            chunkUpload(chunks, "mydedup.index", "test1.jpg");
+            chunkUpload(chunks, "mydedup.index", fileName);
         }
         catch (IOException e){
             return;
