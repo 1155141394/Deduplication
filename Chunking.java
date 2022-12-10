@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.HashMap;
 
 public class Chunking {
     static int maxContainerSize = 1048576;
@@ -96,6 +97,8 @@ public class Chunking {
             ArrayList<String> fileRecipe = new ArrayList<>(); // File recipe
             int len = 0;
             String basicPath = "data/"; // Need to change
+
+            // Loop the chunks
             for (ArrayList<Byte> byteList: chunks)
             {
                 byte[] byteArr = byteList2Arr(byteList);
@@ -103,8 +106,9 @@ public class Chunking {
                 // Check if the container has enough space
                 if (offset + len >= maxContainerSize) {
                     // Store container
-                    String path = basicPath + containerNum;
+                    String path = basicPath + "container" + containerNum;
                     byte2file(path, byteList2Arr(container));
+                    container = new ArrayList<>(); // Optimize
                     containerNum += 1;
                     offset = 0;
                 }
@@ -124,12 +128,51 @@ public class Chunking {
             // Store file recipe
             String fileRecipePath = basicPath + uploadFileName;
             strList2File(fileRecipePath, fileRecipe);
+            // Store the container number
+            String conNumPath = basicPath + "containNum.txt";
+            ArrayList<String> tmp = new ArrayList<>();
+            tmp.add(Integer.toString(containerNum));
+            strList2File(conNumPath, tmp);
         }
         // Exist the index file
         else
         {
-            ArrayList<String> indexList = file2StrList("data/mydedup.index");
+            ArrayList<Byte> container = new ArrayList<>(); // New container
+            // Get the container number from the file
+            ArrayList<String> conNumList = file2StrList("data/containNum.txt");
+            int containerNum = Integer.parseInt(conNumList.get(0)) + 1;
+            // Get index and store in a map
+            ArrayList<String> indexes = file2StrList("data/mydedup.index");
+            HashMap<String, Integer> indexMap = new HashMap<>();
+            for(String index: indexes){
+                String[] s = index.split(",");
+                indexMap.put(s[0],1);
+            }
+            int offset = 0; // file offset
+            ArrayList<String> fileRecipe = new ArrayList<>(); // File recipe
+            int len = 0; // chunk length
+            String basicPath = "data/"; // Need to change
 
+            // Loop the chunks
+            for (ArrayList<Byte> bytelist: chunks)
+            {
+                byte[] byteArr = byteList2Arr(byteList);
+                len = byteList.size();
+                // Check if the container has enough space
+                if (offset + len >= maxContainerSize) {
+                    // Store container
+                    String path = basicPath + "container" + containerNum;
+                    byte2file(path, byteList2Arr(container));
+                    container = new ArrayList<>(); // Optimize
+                    containerNum += 1;
+                    offset = 0;
+                }
+                // Generate the fingerprint
+                byte[] checksum = getChecksum(byteArr);
+                String fingerprint = Arrays.toString(checksum);
+                // Compare fingerprint
+
+            }
         }
         return 0;
     }
