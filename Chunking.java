@@ -45,7 +45,7 @@ public class Chunking {
 
     public static int strList2File(String path, ArrayList<String> list){
         try{
-            FileWriter writer = new FileWriter("output.txt");
+            FileWriter writer = new FileWriter(path);
             for(String str: list) {
                 writer.write(str + System.lineSeparator());
             }
