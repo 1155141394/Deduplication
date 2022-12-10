@@ -86,7 +86,7 @@ public class Chunking {
     }
 
     public static int chunkUpload(ArrayList<ArrayList<Byte>> chunks, String indexFile, String uploadFileName) throws IOException {
-        File f = new File(indexFile);
+        File f = new File("data/"+indexFile);
         // 判断Index file是否存在
         if (!f.exists())
         {
@@ -256,7 +256,7 @@ public class Chunking {
 
         }
         try {
-            chunkUpload(chunks, "mydedup.index", "test.jpg");
+            chunkUpload(chunks, "mydedup.index", "test1.jpg");
         }
         catch (IOException e){
             return;
