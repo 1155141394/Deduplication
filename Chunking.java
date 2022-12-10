@@ -178,7 +178,7 @@ public class Chunking {
                 String fingerprint = Arrays.toString(checksum);
                 // Compare fingerprint
                 if (!indexMap.containsKey(fingerprint))
-                    indexes.add(fingerprint + "," + offset + "," + len);
+                    indexes.add(fingerprint + "," + containerNum + "," + offset + "," + len);
                 fileRecipe.add(fingerprint);
                 // Add chunk to container
                 container.addAll(byteList);
