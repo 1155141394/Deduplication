@@ -171,9 +171,26 @@ public class Chunking {
                 byte[] checksum = getChecksum(byteArr);
                 String fingerprint = Arrays.toString(checksum);
                 // Compare fingerprint
-
+                if (!indexMap.containsKey(fingerprint))
+                    indexes.add(fingerprint + "," + offset + "," + len);
+                fileRecipe.add(fingerprint);
+                // Add chunk to container
+                container.addAll(byteList);
+                offset += len;
             }
+            // Store the index file
+            String indexFilePath = basicPath + "mydedup.index";
+            strList2File(indexFilePath, indexes);
+            // Store file recipe
+            String fileRecipePath = basicPath + uploadFileName;
+            strList2File(fileRecipePath, fileRecipe);
+            // Store the container number
+            String conNumPath = basicPath + "containNum.txt";
+            ArrayList<String> tmp = new ArrayList<>();
+            tmp.add(Integer.toString(containerNum));
+            strList2File(conNumPath, tmp);
         }
+
         return 0;
     }
 
