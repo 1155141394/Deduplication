@@ -115,14 +115,19 @@ public class Chunking {
                 // Generate the index
                 byte[] checksum = getChecksum(byteArr);
                 String fingerprint = Arrays.toString(checksum);
-                indexes.add(fingerprint + "," + offset + "," + len);
+                indexes.add(fingerprint + "," + containerNum + "," + offset + "," + len);
                 // Store the fingerprint in file recipe
                 fileRecipe.add(fingerprint);
                 // Add chunk to buffer
                 container.addAll(byteList);
                 offset += len;
             }
-
+            // Upload the container in memory to cloud
+            String path = basicPath + "container" + containerNum;
+            byte2file(path, byteList2Arr(container));
+            container = new ArrayList<>(); // Optimize
+            containerNum += 1;
+            offset = 0;
             // Store the index file
             String indexFilePath = basicPath + "mydedup.index";
             strList2File(indexFilePath, indexes);
