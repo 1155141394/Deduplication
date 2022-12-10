@@ -5,7 +5,7 @@ import java.lang.Math;
 import java.security.MessageDigest;
 
 public class Chunking {
-
+    int maxContainerSize = ;
     public static byte[] file2byte(String path)
     {
         try {
@@ -21,10 +21,34 @@ public class Chunking {
         }
     }
 
-    public static byte[] getChecksum(byte[] buffer) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-        md.update(buffer, 0, buffer.length);
-        return md.digest();
+    public static byte[] getChecksum(byte[] buffer){
+        try{
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            md.update(buffer, 0, buffer.length);
+            return md.digest();
+        }
+        catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    public static int chunkUpload(ArrayList<ArrayList<Integer>> chunks, String indexFile)
+    {
+        File f = new File(indexFile);
+        if (f.exists())
+        {
+            ArrayList<Byte> container = new ArrayList<Byte>();
+            int offset = 0;
+            for (ArrayList<Byte> bytearr: chunks)
+            {
+
+            }
+        }
+        else
+        {
+
+        }
     }
 
     public static void main(String[] args) {
@@ -72,7 +96,7 @@ public class Chunking {
             }
 
         }
-        System.out.println(chunks.size());
+        System.out.println(chunks.get(1));
 
 
 
