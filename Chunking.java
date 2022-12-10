@@ -123,7 +123,7 @@ public class Chunking {
                 offset += len;
             }
             // Upload the container in memory to cloud
-            String path = basicPath + "container" + containerNum;
+            String path = basicPath + "container" + containerNum + ".txt";
             byte2file(path, byteList2Arr(container));
             container = new ArrayList<>(); // Optimize
             containerNum += 1;
@@ -146,7 +146,7 @@ public class Chunking {
             ArrayList<Byte> container = new ArrayList<>(); // New container
             // Get the container number from the file
             ArrayList<String> conNumList = file2StrList("data/containNum.txt");
-            int containerNum = Integer.parseInt(conNumList.get(0)) + 1;
+            int containerNum = Integer.parseInt(conNumList.get(0));
             // Get index and store in a map
             ArrayList<String> indexes = file2StrList("data/mydedup.index");
             HashMap<String, Integer> indexMap = new HashMap<>();
@@ -184,6 +184,12 @@ public class Chunking {
                 container.addAll(byteList);
                 offset += len;
             }
+            // Store the container in memory to cloud
+            String path = basicPath + "container" + containerNum + ".txt";
+            byte2file(path, byteList2Arr(container));
+            container = new ArrayList<>(); // Optimize
+            containerNum += 1;
+            offset = 0;
             // Store the index file
             String indexFilePath = basicPath + "mydedup.index";
             strList2File(indexFilePath, indexes);
