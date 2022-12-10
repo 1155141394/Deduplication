@@ -5,6 +5,8 @@ import java.lang.Math;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class Chunking {
     static int maxContainerSize = 1048576;
@@ -45,16 +47,28 @@ public class Chunking {
 
     public static int strList2File(String path, ArrayList<String> list){
         try{
-            FileWriter writer = new FileWriter(path);
+            FileWriter fwriter = new FileWriter(path);
             for(String str: list) {
-                writer.write(str + System.lineSeparator());
+                fwriter.write(str + System.lineSeparator());
             }
-            writer.close();
+            fwriter.close();
             return 0;
         }
         catch (Exception e){
             return 1;
         }
+    }
+
+    public static ArrayList<String> file2StrList(String path) throws IOException{
+        ArrayList<String> strList = new ArrayList<>();
+        BufferedReader buffreader = new BufferedReader(new FileReader(path));
+        String line = buffreader.readLine();
+        while (line != null) {
+            strList.add(line);
+            line = buffreader.readLine();
+        }
+        buffreader.close();
+        return strList;
     }
 
     public static byte[] getChecksum(byte[] buffer){
@@ -70,8 +84,7 @@ public class Chunking {
         }
     }
 
-    public static int chunkUpload(ArrayList<ArrayList<Byte>> chunks, String indexFile, String uploadFileName)
-    {
+    public static int chunkUpload(ArrayList<ArrayList<Byte>> chunks, String indexFile, String uploadFileName) throws IOException {
         File f = new File(indexFile);
         // 判断Index file是否存在
         if (!f.exists())
@@ -82,7 +95,7 @@ public class Chunking {
             int offset = 0;
             ArrayList<String> fileRecipe = new ArrayList<>(); // File recipe
             int len = 0;
-            String basicPath = "./data/"; // Need to change
+            String basicPath = "data/"; // Need to change
             for (ArrayList<Byte> byteList: chunks)
             {
                 byte[] byteArr = byteList2Arr(byteList);
@@ -112,8 +125,10 @@ public class Chunking {
             String fileRecipePath = basicPath + uploadFileName;
             strList2File(fileRecipePath, fileRecipe);
         }
+        // Exist the index file
         else
         {
+            ArrayList<String> indexList = file2StrList("data/mydedup.index");
 
         }
         return 0;
