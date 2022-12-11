@@ -263,6 +263,15 @@ public class MyDedup {
         byte2file(newFileName, fileByteArr);
         return 0;
     }
+    public static int powMod(int a, int b,int mod){
+        for(int i=0;i<b-1;i++){
+            a = (a*a)%mod;
+        }
+        if(b==0){
+            return 1;
+        }
+        return a;
+    }
 
     public static ArrayList<ArrayList<Byte>> getChunks(String fileName,int m,int d,int q,int maxSize){
         File file = new File(fileName);
@@ -290,7 +299,7 @@ public class MyDedup {
             int p = 0;
 
             for (int j = 0;j<m;j++){
-                p += (int)buffer[i+j]%q*Math.pow(d,m-1-j)%q;
+                p += (int)buffer[i+j]%q*powMod(d,m-1-j,q);
             }
             if (i+m>=size){
                 ArrayList<Byte> chunk = new ArrayList<>();
@@ -298,7 +307,7 @@ public class MyDedup {
                     chunk.add(buffer[j]);
                 }
                 chunks.add(chunk);
-                System.out.println("chunks");
+
                 return chunks;
             }
 
@@ -309,6 +318,7 @@ public class MyDedup {
                     chunk.add(buffer[j]);
                 }
                 chunks.add(chunk);
+                System.out.println(chunk.size());
                 lastFlag = i + m - 1;
                 i = nowFlag + 1;
                 continue;
