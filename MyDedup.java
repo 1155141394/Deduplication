@@ -115,7 +115,7 @@ public class MyDedup {
                 // Check if the container has enough space
                 if (offset + len >= maxContainerSize) {
                     // Store container
-                    String path = basicPath + "container" + containerNum;
+                    String path = basicPath + "container" + containerNum + ".txt";
                     byte2file(path, byteList2Arr(container));
                     container = new ArrayList<>(); // Optimize
                     containerNum += 1;
@@ -179,7 +179,7 @@ public class MyDedup {
                 // Check if the container has enough space
                 if (offset + len >= maxContainerSize) {
                     // Store container
-                    String path = basicPath + "container" + containerNum;
+                    String path = basicPath + "container" + containerNum + ".txt";
                     byte2file(path, byteList2Arr(container));
                     container = new ArrayList<>(); // Optimize
                     containerNum += 1;
@@ -279,13 +279,14 @@ public class MyDedup {
             return null;
         }
         int size = buffer.length;
+        System.out.println(size);
 
 
         ArrayList<ArrayList<Byte>> chunks = new ArrayList<>();
         int lastFlag = -1;
         int nowFlag;
         int i = 0;
-        while(i<size-m){
+        while(i<=size-m){
             int p = 0;
 
             for (int j = 0;j<m;j++){
@@ -293,10 +294,11 @@ public class MyDedup {
             }
             if (i+m>=size){
                 ArrayList<Byte> chunk = new ArrayList<>();
-                for (int j = i ;j < size; j++){
+                for (int j = lastFlag+1 ;j < size; j++){
                     chunk.add(buffer[j]);
                 }
                 chunks.add(chunk);
+                System.out.println("chunks");
                 return chunks;
             }
 
@@ -313,7 +315,7 @@ public class MyDedup {
             }
             i++;
         }
-        System.out.println(chunks);
+        //System.out.println(chunks);
         return chunks;
     }
 
