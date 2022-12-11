@@ -195,7 +195,7 @@ public class MyDedup {
                     container.addAll(byteList);
                     offset += len;
                 }
-                else System.out.println(byteList.size());
+//                else System.out.println(byteList.size());
                 fileRecipe.add(fingerprint);
                 // Add chunk to container
             }
@@ -324,6 +324,10 @@ public class MyDedup {
             int q = Integer.parseInt(args[2]);
             int maxSize = Integer.parseInt(args[3]);
             int d = Integer.parseInt(args[4]);
+            if(!(checkPower(m)&&checkPower(q)&&checkPower(maxSize))){
+                System.out.println("Not power of 2!");
+                return;
+            }
 
 
             ArrayList<ArrayList<Byte>> chunks = getChunks(fileName,m,d,q,maxSize);
