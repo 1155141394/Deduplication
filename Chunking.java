@@ -60,6 +60,15 @@ public class Chunking {
         }
     }
 
+    public static boolean checkPower(int val){
+        int i = 1;
+        while (val >= i){
+            if (val == i) return true;
+            else i <<= 1;
+        }
+        return false;
+    }
+
     public static ArrayList<String> file2StrList(String path) throws IOException{
         ArrayList<String> strList = new ArrayList<>();
         BufferedReader buffreader = new BufferedReader(new FileReader(path));
@@ -314,7 +323,7 @@ public class Chunking {
     }
 
     public static void main(String[] args) {
-        String fileName = "./test.jpg";
+        String fileName = "./test1.jpg";
         ArrayList<ArrayList<Byte>> chunks = getChunks(fileName);
         System.out.println("Chunks size is "+chunks.size());
         try {
