@@ -10,7 +10,7 @@ import java.io.FileReader;
 import java.util.HashMap;
 
 public class Chunking {
-    static int maxContainerSize = 1048576;
+    static int maxContainerSize = 1048576; // 1MB
     public static byte[] file2byte(String path)
     {
         try {
@@ -210,11 +210,48 @@ public class Chunking {
             tmp.add(Integer.toString(containerNum));
             strList2File(conNumPath, tmp);
         }
-
         return 0;
     }
 
-    public static int downloadFile(String fileName){
+    public static ArrayList<Byte> downloadFile(String fileName) throws IOException {
+        ArrayList<Byte> file = new ArrayList<>();
+        ArrayList<String> fileFP = new ArrayList<>();
+        fileFP = file2StrList("data/"+ fileName + ".txt"); // Get fingerprint of one file
+        ArrayList<String> indexes = new ArrayList<>();
+        indexes = file2StrList("data/mydedup.index"); // Get the chunk index
+        HashMap<String, Integer> indexMap = new HashMap<>(); // Hashmap of index,record the index
+        int count = 0;
+        for(String index: indexes)
+        {
+            String[] s = index.split(";");
+            indexMap.put(s[0], count);
+            count += 1;
+        }
+        // Get the content of the file
+        for(String fingerPrint: fileFP)
+        {
+            int index = indexMap.get(fingerPrint);
+            String chunkIndex = indexes.get(index); // Get all the information of chunk
+            String[] s = chunkIndex.split(";");
+            String containerNum = s[1]; // Get which container file content in
+            int offset = Integer.parseInt(s[2]); // Get the start point of the content
+            int len = Integer.parseInt(s[3]); // Get the length of content
+            String containerName = "container" + containerNum;
+            byte[] container = file2byte("data/" + containerName + ".txt");
+            ArrayList<Byte> fileContent = new ArrayList<>();
+            for(int i = offset; i < offset + len; i++)
+            {
+                fileContent.add(container[i]);
+            }
+            file.addAll(fileContent); // Add the content part into file
+        }
+        return file;
+    }
+
+    public static int constructFile(String fileToDownload, String newFileName) throws IOException {
+        ArrayList<Byte> fileByteList = downloadFile(fileToDownload);
+        byte[] fileByteArr = byteList2Arr(fileByteList);
+        byte2file(newFileName, fileByteArr);
         return 0;
     }
 
@@ -283,9 +320,15 @@ public class Chunking {
             chunkUpload(chunks, "mydedup.index", fileName);
         }
         catch (IOException e){
-            return;
+            System.out.println(e);
         }
-
+        String newFileName = "test2.jpg";
+        try {
+            constructFile(fileName, newFileName);
+        }
+        catch(IOException e){
+            System.out.println(e);
+        }
 
     }
 }
