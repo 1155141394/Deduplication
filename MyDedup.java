@@ -1,5 +1,4 @@
 import java.io.*;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.lang.Math;
 import java.security.MessageDigest;
@@ -9,7 +8,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
 
-public class Chunking {
+public class MyDedup {
     static int maxContainerSize = 1048576; // 1MB
     public static byte[] file2byte(String path)
     {
@@ -265,7 +264,7 @@ public class Chunking {
         return 0;
     }
 
-    public static ArrayList<ArrayList<Byte>> getChunks(String fileName){
+    public static ArrayList<ArrayList<Byte>> getChunks(String fileName,int m,int d,int q,int maxSize){
         File file = new File(fileName);
         InputStream in = null;
         byte[] buffer;
@@ -280,10 +279,6 @@ public class Chunking {
             return null;
         }
         int size = buffer.length;
-
-        int m = 10;
-        int d = 257;
-        int q = 100;
 
 
         ArrayList<ArrayList<Byte>> chunks = new ArrayList<>();
@@ -305,9 +300,8 @@ public class Chunking {
                 return chunks;
             }
 
-            if(p%q == 0){
-
-                nowFlag = i + m - 1;
+            nowFlag = i + m - 1;
+            if(p%q == 0 || nowFlag-lastFlag>=maxSize){
                 ArrayList<Byte> chunk = new ArrayList<>();
                 for (int j = lastFlag + 1;j <= nowFlag; j++){
                     chunk.add(buffer[j]);
@@ -319,25 +313,34 @@ public class Chunking {
             }
             i++;
         }
+        System.out.println(chunks);
         return chunks;
     }
 
     public static void main(String[] args) {
-        String fileName = "./test1.jpg";
-        ArrayList<ArrayList<Byte>> chunks = getChunks(fileName);
-        System.out.println("Chunks size is "+chunks.size());
-        try {
-            chunkUpload(chunks, "mydedup.index", fileName);
-        }
-        catch (IOException e){
-            System.out.println(e);
-        }
-        String newFileName = "test2.jpg";
-        try {
-            constructFile(fileName, newFileName);
-        }
-        catch(IOException e){
-            System.out.println(e);
+        if(args[0].equals("upload")){
+            String fileName = args[5];
+            int m = Integer.parseInt(args[1]);
+            int q = Integer.parseInt(args[2]);
+            int maxSize = Integer.parseInt(args[3]);
+            int d = Integer.parseInt(args[4]);
+
+
+            ArrayList<ArrayList<Byte>> chunks = getChunks(fileName,m,d,q,maxSize);
+            System.out.println("Chunks size is "+chunks.size());
+            try {
+                chunkUpload(chunks, "mydedup.index", fileName);
+            }
+            catch (IOException e){
+                System.out.println(e);
+            }
+        } else if (args[0].equals("download")) {
+            try {
+                constructFile(args[1], args[2]);
+            }
+            catch(IOException e){
+                System.out.println(e);
+            }
         }
 
     }
