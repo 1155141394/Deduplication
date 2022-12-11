@@ -101,6 +101,7 @@ public class Chunking {
             // Loop the chunks
             for (ArrayList<Byte> byteList: chunks)
             {
+                //System.out.println(byteList);
                 byte[] byteArr = byteList2Arr(byteList);
                 len = byteList.size();
                 // Check if the container has enough space
@@ -154,7 +155,7 @@ public class Chunking {
             HashMap<String, Integer> indexMap = new HashMap<>();
             for(String index: indexes){
                 String[] s = index.split(";");
-                System.out.println(s[0]);
+
                 indexMap.put(s[0],1);
             }
             int offset = 0; // file offset
@@ -215,9 +216,9 @@ public class Chunking {
 
     public static ArrayList<Byte> downloadFile(String fileName) throws IOException {
         ArrayList<Byte> file = new ArrayList<>();
-        ArrayList<String> fileFP = new ArrayList<>();
+        ArrayList<String> fileFP;
         fileFP = file2StrList("data/"+ fileName + ".txt"); // Get fingerprint of one file
-        ArrayList<String> indexes = new ArrayList<>();
+        ArrayList<String> indexes;
         indexes = file2StrList("data/mydedup.index"); // Get the chunk index
         HashMap<String, Integer> indexMap = new HashMap<>(); // Hashmap of index,record the index
         int count = 0;
@@ -271,14 +272,14 @@ public class Chunking {
         }
         int size = buffer.length;
 
-        int m = 4;
+        int m = 10;
         int d = 257;
-        int q = 13;
+        int q = 100;
 
 
         ArrayList<ArrayList<Byte>> chunks = new ArrayList<>();
         int lastFlag = -1;
-        int nowFlag = 0;
+        int nowFlag;
         int i = 0;
         while(i<size-m){
             int p = 0;
