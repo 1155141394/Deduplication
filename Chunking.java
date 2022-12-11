@@ -276,7 +276,7 @@ public class Chunking {
     }
 
     public static void main(String[] args) {
-        String fileName = "./test1.jpg";
+        String fileName = "./test.jpg";
         ArrayList<ArrayList<Byte>> chunks = getChunks(fileName);
         System.out.println("Chunks size is "+chunks.size());
         try {
