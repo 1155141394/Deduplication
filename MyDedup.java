@@ -354,6 +354,7 @@ public class MyDedup {
                     chunk.add(buffer[j]);
                 }
                 chunks.add(chunk);
+                //System.out.println(chunks.get(0));
                 return chunks;
             }
 
@@ -371,7 +372,6 @@ public class MyDedup {
             }
             i++;
         }
-
 
         return chunks;
     }
