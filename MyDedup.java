@@ -170,7 +170,7 @@ public class MyDedup {
             System.out.printf("Total number of unique chunks in storage: %d\n", numUniqueChunk);
             System.out.printf("Total number of bytes of pre-deduplicated chunks in storage: %d\n", bytePreDedChunk);
             System.out.printf("Total number of bytes of unique chunks in storage: %d\n", byteUniqueChunk);
-            System.out.printf("Total number of containers in storage: %d\n", containerNum-1);
+            System.out.printf("Total number of containers in storage: %d\n", containerNum);
             double deduRatio = (double) bytePreDedChunk/byteUniqueChunk;
             System.out.printf("Deduplication ratio: %.2f\n", deduRatio);
         }
@@ -260,7 +260,7 @@ public class MyDedup {
             System.out.printf("Total number of unique chunks in storage: %d\n", numUniqueChunk);
             System.out.printf("Total number of bytes of pre-deduplicated chunks in storage: %d\n", bytePreDedChunk);
             System.out.printf("Total number of bytes of unique chunks in storage: %d\n", byteUniqueChunk);
-            System.out.printf("Total number of containers in storage: %d\n", containerNum-1);
+            System.out.printf("Total number of containers in storage: %d\n", containerNum);
             double deduRatio = (double) bytePreDedChunk/byteUniqueChunk;
             System.out.printf("Deduplication ratio: %.2f\n", deduRatio);
         }
