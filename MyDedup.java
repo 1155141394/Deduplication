@@ -93,7 +93,17 @@ public class MyDedup {
         }
     }
 
+    public static void testCreateDir(String folderName) {
+        File directory = new File(folderName);
+        //mkdir
+        directory.mkdir();
+        //mkdirs
+        directory.mkdirs();
+        return;
+
+    }
     public static int chunkUpload(ArrayList<ArrayList<Byte>> chunks, String indexFile, String uploadFileName) throws IOException {
+        testCreateDir("./data");
         File f = new File("data/"+indexFile);
         // 判断Index file是否存在
         if (!f.exists())
