@@ -114,6 +114,7 @@ public class MyDedup {
             int offset = 0;
             ArrayList<String> fileRecipe = new ArrayList<>(); // File recipe
             int len = 0;
+            HashMap<String, Integer> indexMap = new HashMap<>();
             String basicPath = "data/"; // Need to change
             int numOfFile = 1;
             int numPreDedChunk = chunks.size();
@@ -140,14 +141,17 @@ public class MyDedup {
                 // Generate the index
                 byte[] checksum = getChecksum(byteArr);
                 String fingerprint = Arrays.toString(checksum);
-                indexes.add(fingerprint + ";" + containerNum + ";" + offset + ";" + len);
-                byteUniqueChunk += byteList.size();
-                numUniqueChunk += 1;
+                if(!indexMap.containsKey(fingerprint)) {
+                    indexMap.put(fingerprint,1);
+                    indexes.add(fingerprint + ";" + containerNum + ";" + offset + ";" + len);
+                    byteUniqueChunk += byteList.size();
+                    numUniqueChunk += 1;
+                    // Add chunk to buffer
+                    container.addAll(byteList);
+                    offset += len;
+                }
                 // Store the fingerprint in file recipe
                 fileRecipe.add(fingerprint);
-                // Add chunk to buffer
-                container.addAll(byteList);
-                offset += len;
             }
             // Upload the container in memory to cloud
             if(container.size() >= 1) {
@@ -231,6 +235,7 @@ public class MyDedup {
                 // Compare fingerprint
                 if (!indexMap.containsKey(fingerprint))
                 {
+                    indexMap.put(fingerprint,1);
                     indexes.add(fingerprint + ";" + containerNum + ";" + offset + ";" + len);
                     container.addAll(byteList);
                     offset += len;
