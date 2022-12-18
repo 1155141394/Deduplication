@@ -358,22 +358,23 @@ public class MyDedup {
         int lastFlag = -1;
         int nowFlag;
         int i = 0;
-        while(i<=size-m){
+        //System.out.println(size);
+        while(i<size){
             int p = 0;
-
-            for (int j = 0;j<m;j++){
-                p = (p+(int)buffer[i+j]%q*powMod(d,m-1-j,q))%q;
-            }
 
             if (i+m>=size){
                 ArrayList<Byte> chunk = new ArrayList<>();
                 for (int j = lastFlag+1 ;j < size; j++){
                     chunk.add(buffer[j]);
                 }
+
                 chunks.add(chunk);
-                //System.out.println(chunks.get(0));
                 return chunks;
             }
+            for (int j = 0;j<m;j++){
+                p = (p+(int)buffer[i+j]%q*powMod(d,m-1-j,q))%q;
+            }
+
 
             nowFlag = i + m - 1;
             //System.out.println(p);
