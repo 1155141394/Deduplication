@@ -151,6 +151,7 @@ public class MyDedup {
             String indexFilePath = basicPath + "mydedup.index";
             strList2File(indexFilePath, indexes);
             // Store file recipe
+            uploadFileName = uploadFileName.replaceAll("[//]","");
             String fileRecipePath = basicPath + uploadFileName + ".txt";
             strList2File(fileRecipePath, fileRecipe);
             // Store the container number, total num of files, num of prechunk, num of unique chunk,
@@ -242,6 +243,7 @@ public class MyDedup {
             String indexFilePath = basicPath + "mydedup.index";
             strList2File(indexFilePath, indexes);
             // Store file recipe
+            uploadFileName = uploadFileName.replaceAll("[//]","");
             String fileRecipePath = basicPath + uploadFileName + ".txt";
             strList2File(fileRecipePath, fileRecipe);
             // Store the info
@@ -399,7 +401,8 @@ public class MyDedup {
             }
         } else if (args[0].equals("download")) {
             try {
-                constructFile(args[1], args[2]);
+                String fileName = args[1].replaceAll("[//]","");
+                constructFile(fileName, args[2]);
             }
             catch(IOException e){
                 System.out.println(e);
